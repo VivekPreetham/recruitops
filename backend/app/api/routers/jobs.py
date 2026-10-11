@@ -20,7 +20,7 @@ STAFF = (UserRole.recruiter, UserRole.admin)
 def create_job(
     body: JobCreate,
     db: Session = Depends(get_db),
-    user: User = Depends(get_current_user),
+    user: User = Depends(require_role(*STAFF)),
 ):
     return job_service.create_job(db, user, body)
 
