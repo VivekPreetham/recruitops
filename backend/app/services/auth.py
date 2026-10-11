@@ -115,8 +115,10 @@ def _revoke_all(
 ) -> None:
     now = datetime.now(UTC)
     tokens = db.scalars(
-        RefreshToken.user_id == user_id,
-        RefreshToken.revoked_at.is_(None)
+        select(RefreshToken).where(
+            RefreshToken.user_id == user_id,
+            RefreshToken.revoked_at.is_(None)
+        )
     )
 
     for t in tokens:
