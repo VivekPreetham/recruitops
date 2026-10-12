@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     llm_provider: str = "groq"
     llm_model: str
     llm_temperature: float = 0.0
+    llm_api_key: str
 
 
 @lru_cache
