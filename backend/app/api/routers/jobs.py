@@ -10,6 +10,8 @@ from app.db.session import get_db
 from app.schemas.common import Page
 from app.schemas.jobs import JobCreate, JobUpdate, JobOut
 from app.services import jobs as job_service
+from app.schemas.job_analysis import AnalysisStatus, ConfirmRequest, JobRequirementsOut
+from app.services import job_analysis as analysis_service
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
@@ -60,3 +62,33 @@ def update_job(
     db: Session = Depends(get_db),
 ):
     return job_service.update_job(db, user, job_id, body)
+
+
+@router.post("/{job_id}/analyze", response_model=AnalysisStatus)
+def run_job_analysis(
+    job_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_role(*STAFF)),
+):
+    return analysis_service.start_analysis(db, user, job_id)
+
+
+@router.get("/{job_id}/analysis", response_model=AnalysisStatus)
+def get_job_analysis(
+    job_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_role(*STAFF)),
+):
+    return analysis_service.get_status(db, user, job_id)
+
+
+@router.post(
+    "/{job_id}/requirements/confirm", response_model=JobRequirementsOut, status_code=201
+)
+def confirm_job_requirements(
+    job_id: uuid.UUID,
+    body: ConfirmRequest,
+    db: Session = Depends(get_db),
+    user: User = Depends(require_role(*STAFF)),
+):
+    return analysis_service.confirm_requirements(db, user, job_id, body.requirements)
