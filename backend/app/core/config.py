@@ -1,11 +1,11 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
+
+ENV_FILE = Path(__file__).resolve().parents[3] / ".env"
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file="../.env",
-        extra="ignore"
-    )
+    model_config = SettingsConfigDict(env_file=ENV_FILE, extra="ignore")
 
     database_url: str
     redis_url: str
@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     llm_provider: str = "groq"
     llm_model: str
     llm_temperature: float = 0.0
+    llm_api_key: str
 
 
 @lru_cache
