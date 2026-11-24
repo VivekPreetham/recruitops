@@ -34,7 +34,10 @@ def _clean_tables():
     yield
     with engine.begin() as conn:
         conn.execute(
-            text("TRUNCATE refresh_tokens, jobs, users, organizations RESTART IDENTITY CASCADE")
+            text(
+                "TRUNCATE job_requirements, refresh_tokens, jobs, users, organizations "
+                "RESTART IDENTITY CASCADE"
+            )
         )
 
 

@@ -54,7 +54,7 @@ def get_status(db: Session, user: User, job_id: uuid.UUID) -> AnalysisStatus:
     return AnalysisStatus(status="not_started")
 
 
-def start_analysis(db: Session, user: User, job_id: uuid.uuid1) -> AnalysisStatus:
+def start_analysis(db: Session, user: User, job_id: uuid.UUID) -> AnalysisStatus:
     job = job_service.get_job(db, user, job_id)
     version = _latest_version(db, user.organization_id, job.id) + 1
     graph, config = _graph(), _config(job.id, version)

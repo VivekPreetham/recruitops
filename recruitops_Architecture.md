@@ -82,9 +82,9 @@ Planned additions: `frontend/` (Vite, created in the frontend phase), Dockerfile
 | Phase | Status |
 |---|---|
 | 0. Foundation | **DONE** (Docker up, `/health` works, Alembic connects, Ruff configured). Checkpoint questions pending/optional review. |
-| 1. Auth, RBAC, Jobs CRUD, multi-tenancy | NEXT |
-| 2. LLM layer + Job Analysis graph (checkpointer + first interrupt) | not started |
-| 3. Resume pipeline | not started |
+| 1. Auth, RBAC, Jobs CRUD, multi-tenancy | **DONE** (register/login/refresh/logout/me, jobs CRUD, RBAC + cross-org isolation tests). |
+| 2. LLM layer + Job Analysis graph (checkpointer + first interrupt) | **DONE** (analyze → interrupt → confirm, Postgres checkpointer, versioned `job_requirements`, workflow tests). Skills taxonomy deferred to Phase 3. |
+| 3. Resume pipeline | NEXT |
 | 4. Candidate Evaluation subgraph + scoring engine | not started |
 | 5. Main application graph (routing, HITL, streaming) | not started |
 | 6. Rankings, comparison, recruiter frontend | not started |
