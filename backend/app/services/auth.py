@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.errors import UnauthorizedError, ConflictError, NotFoundError
-from app.db.models import UserRole, RefreshToken, User, Organization
+from app.db.models import Candidate, Organization, RefreshToken, User, UserRole
 from app.core.security import (
     create_access_token,
     generate_refresh_token, 
@@ -74,6 +74,8 @@ def register_candidate(
         role=UserRole.candidate,
     )
     db.add(user)
+    db.flush()
+    db.add(Candidate(organization_id=org.id, user_id=user.id))
     db.commit()
     return user
 

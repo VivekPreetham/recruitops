@@ -1,9 +1,12 @@
 import pytest
 
+from sqlalchemy import func, select
+
 from app.core.errors import UnauthorizedError
+from app.db.models import Candidate, User, UserRole
 from app.db.session import SessionLocal
 from app.services import auth as auth_service
-from tests.helpers import API, PASSWORD, auth_headers, register_recruiter
+from tests.helpers import API, PASSWORD, auth_headers, org_slug, register_candidate, register_recruiter
 
 
 def test_register_login_me(client):
@@ -35,6 +38,24 @@ def test_wrong_password_is_401(client):
 
 def test_me_requires_token(client):
     assert client.get(f"{API}/auth/me").status_code == 401
+
+
+def test_register_candidate_creates_candidate_row(client):
+    register_recruiter(client, "r@acme.com", "Acme")
+    body = register_candidate(client, "c@acme.com", org_slug("Acme"))
+
+    with SessionLocal() as db:
+        user = db.get(User, body["id"])
+        candidate = db.scalar(select(Candidate).where(Candidate.user_id == user.id))
+        assert candidate is not None
+        assert candidate.organization_id == user.organization_id
+        assert user.role == UserRole.candidate
+
+
+def test_register_recruiter_does_not_create_candidate_row(client):
+    register_recruiter(client, "r@acme.com", "Acme")
+    with SessionLocal() as db:
+        assert db.scalar(select(func.count()).select_from(Candidate)) == 0
 
 
 def test_refresh_token_reuse_revokes_all_sessions(client):

@@ -16,7 +16,7 @@ class UserRole(str, enum.Enum):
 
 
 class User(UUIDPKMixin, TimestampMixin, Base):
-    __tablename__ = "users"\
+    __tablename__ = "users"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("organizations.id"), index=True, nullable=False
